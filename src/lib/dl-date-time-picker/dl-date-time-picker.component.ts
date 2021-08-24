@@ -263,6 +263,13 @@ export class DlDateTimePickerComponent<D> implements OnChanges, OnInit, ControlV
     'oi-chevron-top'
   ];
 
+  @Input()
+  min;
+
+
+  @Input()
+  max;
+
   /**
    * Used to construct a new instance of a date/time picker.
    *
@@ -314,6 +321,7 @@ export class DlDateTimePickerComponent<D> implements OnChanges, OnInit, ControlV
    **/
   private set model(model: DlDateTimePickerModel) {
     this._model = this.applySelectFilter(model);
+    this._model = this.applyMinMax(model);
   }
 
   /**
@@ -374,6 +382,38 @@ export class DlDateTimePickerComponent<D> implements OnChanges, OnInit, ControlV
 
     return model;
   }
+
+   /**
+   * Applies the `min or max restrictions` by adding the `dl-abdtp-disabled`
+   * class to any `DateButton` where `date is outside [min max]` returned false.
+   *
+   * @param model
+   *  the new model
+   *
+   * @returns
+   *  the supplied model with zero or more `DateButton`'s
+   *  having the `dl-abdtp-disabled` class set to `true` if the
+   *  selection for that date should be disabled.
+   *
+   * @internal
+   */
+    private applyMinMax(model: DlDateTimePickerModel): DlDateTimePickerModel {
+      if (this.min || this.max) {
+        model.rows = model.rows.map((row) => {
+          row.cells.map((dateButton: DateButton) => {
+            const disabled = (this.min && moment(dateButton.value).isBefore(this.min)) || (this.max && moment(dateButton.value).isAfter(this.max));
+            dateButton.classes['dl-abdtp-disabled'] = disabled;
+            if (disabled) {
+              dateButton.classes['aria-disabled'] = true;
+            }
+            return dateButton;
+          });
+          return row;
+        });
+      }
+  
+      return model;
+    }
 
   /**
    * Focuses the `.dl-abdtp-active` cell after the microtask queue is empty.

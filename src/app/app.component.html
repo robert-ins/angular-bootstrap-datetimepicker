@@ -72,6 +72,8 @@
   <div class="col mx-3" style="min-width:360px;">
     <div class="border" *ngIf="showCalendar">
       <dl-date-time-picker
+        [min]="min"
+        [max]="max"
         [(maxView)]="maxView"
         [(minView)]="minView"
         [(startView)]="startView"

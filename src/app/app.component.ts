@@ -16,7 +16,8 @@ import {DlDateTimePickerChange} from '../lib';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
+  min= '2021-08-15';
+  max= '2021-08-20';
   maxView = 'year';
   minView = 'minute';
   minuteStep = 5;
